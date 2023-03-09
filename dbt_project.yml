@@ -1,8 +1,7 @@
-
 # Name your project! Project names should contain only lowercase characters
 # and underscores. A good package name should reflect your organization's
 # name or the intended use of these models
-name: 'my_new_project'
+name: 'AB_Data_Core'
 version: '1.0.0'
 config-version: 2
 
@@ -12,17 +11,31 @@ profile: 'default'
 # These configurations specify where dbt should look for different types of files.
 # The `source-paths` config, for example, states that models in this project can be
 # found in the "models/" directory. You probably won't need to change these!
-model-paths: ["models"]
+
+model-paths:
+  - "0_playbooks"
+  - "1_sources"
+  - "3_models"
+  - "4_exposures"
 analysis-paths: ["analyses"]
 test-paths: ["tests"]
-seed-paths: ["seeds"]
+seed-paths: ["0_seeds"]
 macro-paths: ["macros"]
-snapshot-paths: ["snapshots"]
+snapshot-paths: ["2_snapshots"]
 
 target-path: "target"  # directory which will store compiled SQL files
 clean-targets:         # directories to be removed by `dbt clean`
   - "target"
   - "dbt_packages"
+
+# ==================
+# Snowflake Configs
+# ==================
+quoting:
+  database: false
+  schema: false
+  identifier: false
+
 
 
 # Configuring models
@@ -32,7 +45,51 @@ clean-targets:         # directories to be removed by `dbt clean`
 # as tables. These settings can be overridden in the individual model files
 # using the `{{ config(...) }}` macro.
 models:
-  my_new_project:
-    # Applies to all files under models/example/
-    example:
-      materialized: view
+    # ==================
+    # dbt Model Configs
+    # ==================
+    Cerulli_Core: 
+        # Applies to all files under Cerulli_Core/model-paths           
+        0_staging:
+            +materialized: table
+            +database: "{{ env_var('DBT_STAGING_DB','STAGING_DEV') }}"  
+            # Uses environmental variables to determin what value to use. 
+            +schema: GENERAL
+
+        1_edw:
+            +materialized: table
+            transient:  |
+                    {%- if  target.name == "prod" -%} false
+                    {%- else -%} true
+                    {%- endif -%} 
+            +database: "{{ env_var('DBT_DW_DB','EDW_DEV') }}"
+            
+            integration:
+                +schema: INTEGRATION             
+            model:
+                +schema: MODEL 
+            
+        2_presentation:
+            +materialized: view
+            +database: "{{ env_var('DBT_PRESENTATION_DB','PRESENTATION_DEV') }}"
+            +schema: PRIMARY 
+
+snapshots:
+    # ======================
+    # dbt Snapshot Configs
+    # ======================
+    dbt_start: 
+    # Applies to all files under dbt_start/snapshots/
+        +target_database: "{{ env_var('DBT_STAGING_DB','STAGING_DEV') }}"
+        #Typically put in staging as you want your snapshot as close to the source data as possible.
+        examples:
+            +target_schema: "{{ env_var('DBT_EXAMPLE_SCHEMA','DBT_EXAMPLES') }}"
+
+seeds:
+  Cerulli_Core: 
+    +database: "{{ env_var('DBT_STAGING_DB','STAGING_DEV') }}"
+    +schema: DBT_SEEDS
+    +full_refresh: true
+
+on-run-start:
+  - '{{generate_remove_html_udf()}}'
