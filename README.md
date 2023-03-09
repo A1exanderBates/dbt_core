@@ -1,1 +1,1 @@
-# dbt_core_project_1
+# dbt_core
