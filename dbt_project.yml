@@ -56,23 +56,23 @@ models:
             # Uses environmental variables to determin what value to use. 
             +schema: GENERAL
 
-        1_edw:
-            +materialized: table
-            transient:  |
-                    {%- if  target.name == "prod" -%} false
-                    {%- else -%} true
-                    {%- endif -%} 
-            +database: "{{ env_var('DBT_DW_DB','EDW_DEV') }}"
+        #1_edw:
+            #+materialized: table
+            #transient:  |
+                   # {%- if  target.name == "prod" -%} false
+                   # {%- else -%} true
+                   # {%- endif -%} 
+            #+database: "{{ env_var('DBT_DW_DB','EDW_DEV') }}"
             
-            integration:
-                +schema: INTEGRATION             
-            model:
-                +schema: MODEL 
+            #integration:
+                #+schema: INTEGRATION             
+            #model:
+                #+schema: MODEL 
             
-        2_presentation:
-            +materialized: view
-            +database: "{{ env_var('DBT_PRESENTATION_DB','PRESENTATION_DEV') }}"
-            +schema: PRIMARY 
+        #2_presentation:
+            #+materialized: view
+            #+database: "{{ env_var('DBT_PRESENTATION_DB','PRESENTATION_DEV') }}"
+            #+schema: PRIMARY 
 
 snapshots:
     # ======================
@@ -91,5 +91,3 @@ seeds:
     +schema: DBT_SEEDS
     +full_refresh: true
 
-on-run-start:
-  - '{{generate_remove_html_udf()}}'

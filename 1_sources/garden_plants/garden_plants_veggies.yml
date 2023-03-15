@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: VEGGIES
+    database: GARDEN_PLANTS
+    schema: VEGGIES
+    tables:
+      - name: ROOT_DEPTH
+        description: '{{ doc("root_depth_docs")}}'
