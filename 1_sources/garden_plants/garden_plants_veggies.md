@@ -4,3 +4,10 @@
 This table comes from a Snowflake beginner course
 
 {% enddocs %}
+
+{% docs age_range %}
+
+# Age range Table
+This table comes from a Snowflake beginner course
+
+{% enddocs %}

@@ -7,3 +7,9 @@ sources:
     tables:
       - name: ROOT_DEPTH
         description: '{{ doc("root_depth_docs")}}'
+  - name: AGES
+    database: GARDEN_PLANTS
+    schema: TESTING
+    tables:
+      - name: SAMPLE_AGE_RANGE
+        description: "{{ doc('age_range')}}"

@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: TESTING
+    database: RAW
+    schema: TESTING
+    tables:
+      - name: SAMPLE_USERS
+        description: "{{ doc('users') }}"

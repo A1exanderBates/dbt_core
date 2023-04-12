@@ -1,7 +1,7 @@
 # Name your project! Project names should contain only lowercase characters
 # and underscores. A good package name should reflect your organization's
 # name or the intended use of these models
-name: 'AB_Data_Core'
+name: 'dbt_core'
 version: '1.0.0'
 config-version: 2
 
@@ -48,8 +48,8 @@ models:
     # ==================
     # dbt Model Configs
     # ==================
-    Cerulli_Core: 
-        # Applies to all files under Cerulli_Core/model-paths           
+    dbt_core: 
+        # Applies to all files under AB_Data_Core/model-paths           
         0_staging:
             +materialized: table
             +database: "{{ env_var('DBT_STAGING_DB','STAGING_DEV') }}"  
@@ -86,7 +86,7 @@ snapshots:
             +target_schema: "{{ env_var('DBT_EXAMPLE_SCHEMA','DBT_EXAMPLES') }}"
 
 seeds:
-  Cerulli_Core: 
+  dbt_core: 
     +database: "{{ env_var('DBT_STAGING_DB','STAGING_DEV') }}"
     +schema: DBT_SEEDS
     +full_refresh: true
