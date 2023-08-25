@@ -2,7 +2,7 @@
 # Name your project! Project names should contain only lowercase characters
 # and underscores. A good package name should reflect your organization's
 # name or the intended use of these models
-name: 'my_new_project'
+name: 'ab_data_analytics'
 version: '1.0.0'
 config-version: 2
 
@@ -18,6 +18,7 @@ test-paths: ["tests"]
 seed-paths: ["seeds"]
 macro-paths: ["macros"]
 snapshot-paths: ["snapshots"]
+packages-install-path: dbt_packages
 
 target-path: "target"  # directory which will store compiled SQL files
 clean-targets:         # directories to be removed by `dbt clean`
@@ -32,7 +33,19 @@ clean-targets:         # directories to be removed by `dbt clean`
 # as tables. These settings can be overridden in the individual model files
 # using the `{{ config(...) }}` macro.
 models:
-  my_new_project:
+  ab_data_analytics:
     # Applies to all files under models/example/
-    example:
+    0_sources:
       materialized: view
+
+    1_staging:
+      +materialized: view
+      +database: "{{ env_var('DBT_STAGING_DB', 'STAGING_DEV') }}"
+
+    2_intermediate:
+      +materialized: view
+      +database: "{{ env_var('DBT_INTERMEDIATE_DB', 'INTERMEDIATE_DEV') }}"
+      
+    3_presentation:
+      +materialized: view
+      +database:  "{{ env_var('DBT_PRESENTATION_DB', 'PRESENTATION_DEV') }}"
